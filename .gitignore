@@ -1,0 +1,30 @@
+# 忽略所有 node_modules
+**/node_modules/
+
+# 忽略编译产物
+**/.next/
+**/dist/
+
+.env
+client/.env.local
+client/.env.development
+client/.env.production
+server/.env
+
+client/.next/
+
+# 忽略环境变量
+**/.env*
+.DS_Store
+Thumbs.db
+
+.vscode/
+
+client/node_modules/
+server/node_modules/
+client/dist/
+server/dist/
+client/.env
+server/.env
+client/.next/
+node_modules
