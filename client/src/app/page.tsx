@@ -1,8 +1,3 @@
-
 export default function Home() {
-  return (
-    <div >
-      home
-    </div>
-  );
+  return <div className="mt-1">home</div>;
 }
