@@ -25,7 +25,6 @@ import Link from "next/link";
 const AppSidebar = ({ userType }: AppSidebarProps) => {
   const pathname = usePathname();
   const { toggleSidebar, open } = useSidebar();
-  console.log(`open`, open);
 
   const navLinks =
     userType === "manager"
