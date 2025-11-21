@@ -1,13 +1,50 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { setFilters } from "@/state";
 
 const HeroSection = () => {
+  const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
+  const router = useRouter();
+
+  const handleLocationSearch = async () => {
+    try {
+      const trimmedQuery = searchQuery.trim();
+      if (!trimmedQuery) return;
+
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
+          trimmedQuery
+        )}.json?access_token=${
+          process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
+        }&fuzzyMatch=true`
+      );
+      const data = await response.json();
+      if (data.features && data.features.length > 0) {
+        const [lng, lat] = data.features[0].center;
+        dispatch(
+          setFilters({
+            location: trimmedQuery,
+            coordinates: [lng, lat],
+          })
+        );
+        const params = new URLSearchParams({
+          location: trimmedQuery,
+          coordinates: `${lng},${lat}`,
+        });
+        router.push(`/search?${params.toString()}`);
+      }
+    } catch (error) {
+      console.error("error search location:", error);
+    }
+  };
 
   return (
     <div className="relative h-screen">
@@ -42,7 +79,10 @@ const HeroSection = () => {
               placeholder="Search by city, neighborhood or address"
               className="w-full max-w-lg rounded-none rounded-l-xl border-none bg-white h-12"
             />
-            <Button className="bg-secondary-500 text-white rounded-none rounded-r-xl border-none hover:bg-secondary-600 h-12">
+            <Button
+              onClick={handleLocationSearch}
+              className="bg-secondary-500 text-white rounded-none rounded-r-xl border-none hover:bg-secondary-600 h-12"
+            >
               Search
             </Button>
           </div>
